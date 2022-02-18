@@ -1,5 +1,8 @@
+import fs from 'fs';
+import path from 'path';
 import _ from 'lodash';
 import stringHelpers from './stringHelpers';
+import {DEFAULT_EXPORT_PATTERN} from './constants';
 
 const safeVariableName = (fileName) => {
   // Convert hyphenated filename to camelCase
@@ -20,16 +23,42 @@ const safeVariableName = (fileName) => {
   }
 };
 
-const buildExportBlock = (files, options) => {
+const buildExportBlock = (directoryPath, files, options) => {
   let importBlock;
+  const lineEnding = Boolean(options.noSemicolons) ? '' : ';';
   const prefix = options.config && options.config.prefix || '';
   const suffix = options.config && options.config.suffix || '';
-  const noSemicolons = Boolean(options.noSemicolons);
 
   importBlock = _.map(files, (fileName) => {
-    const importName = prefix ? stringHelpers.capitaliseFirstLetter(safeVariableName(fileName)) : safeVariableName(fileName);
+    // Default behaviour
+    let importContents = 'export default';
+	
+    if (directoryPath) {
+		// Read the file
+		let importPath = path.resolve(directoryPath, fileName);
 
-    return 'export { default as ' + prefix + importName + suffix + ' } from \'./' + fileName + '\'' + (noSemicolons ? '' : ';');
+		// Check if directory
+		if (fs.statSync(importPath).isDirectory()) {
+		  // Read 'index.js' from the directory
+		  importPath = path.resolve(importPath, 'index.js');
+		}
+		try {
+		  importContents = fs.readFileSync(indexPath, 'utf-8');
+		} catch (e) {
+		  // Unable to read file, revert to default behaviour
+		}
+	}
+
+    // Check for default export
+    const defaultExport = DEFAULT_EXPORT_PATTERN.test(importContents);
+
+    // Define the export name
+    const safeName = safeVariableName(fileName);
+    const className = prefix ? stringHelpers.capitaliseFirstLetter(safeName) : safeName;
+    const exportAs = prefix + className + suffix;
+    const exportType = defaultExport ? '{ default as ' + exportAs + ' }' : '* as ' + exportAs;
+
+    return 'export ' + exportType + ' from \'./' + safeName + '\'' + lineEnding;
   });
 
   importBlock = importBlock.join('\n');
@@ -37,7 +66,7 @@ const buildExportBlock = (files, options) => {
   return importBlock;
 };
 
-export default (filePaths, options = {}) => {
+export default (directoryPath, filePaths, options = {}) => {
   let code;
   let configCode;
 
@@ -63,7 +92,7 @@ export default (filePaths, options = {}) => {
   if (filePaths.length) {
     const sortedFilePaths = filePaths.sort();
 
-    code += '\n' + buildExportBlock(sortedFilePaths, options) + '\n';
+    code += '\n' + buildExportBlock(directoryPath, sortedFilePaths, options) + '\n';
   }
 
   return code;

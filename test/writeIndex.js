@@ -13,7 +13,11 @@ const readFile = (filePath) => {
 };
 
 const removeFile = (filePath) => {
-  fs.unlinkSync(filePath);
+  try {
+    fs.unlinkSync(filePath);
+  } catch (e) {
+	// File may not exist, from previous failed test
+  }	
 };
 
 const appendToFile = (filePath, content) => {
@@ -34,7 +38,7 @@ describe('writeIndex()', () => {
 // @create-index
 
 export { default as bar } from './bar';
-export { default as foo } from './foo.js';
+export { default as foo } from './foo';
     `));
   });
 
@@ -52,7 +56,7 @@ export { default as foo } from './foo.js';
     expect(indexCode).to.equal(codeExample(`
 // @create-index {"ignore":["/bar.js$/"]}
 
-export { default as foo } from './foo.js';
+export { default as foo } from './foo';
     `));
   });
 });

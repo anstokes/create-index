@@ -57,7 +57,7 @@ export default (directoryPaths, options = {}) => {
       silent: options.ignoreUnsafe,
     });
 
-    const indexCode = createIndexCode(siblings, {
+    const indexCode = createIndexCode(directoryPath, siblings, {
       banner: options.banner,
       config,
       noSemicolons: options.noSemicolons,
