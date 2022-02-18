@@ -29,6 +29,7 @@ const safeVariableName = (fileName, hyphenated) => {
 const buildExportBlock = (directoryPath, files, options) => {
   let importBlock;
   const lineEnding = Boolean(options.noSemicolons) ? '' : ';';
+  const classCase = (options.config && options.config.case || 'Camel').toLowerCase();
   const prefix = options.config && options.config.prefix || '';
   const suffix = options.config && options.config.suffix || '';
 
@@ -58,7 +59,7 @@ const buildExportBlock = (directoryPath, files, options) => {
 
     // Define the export name
     const safeName = safeVariableName(fileName, true);
-    const className = prefix ? stringHelpers.capitaliseFirstLetter(safeName) : safeName;
+    const className = prefix || classCase === 'pascal' ? stringHelpers.capitaliseFirstLetter(safeName) : safeName;
     const exportAs = prefix + className + suffix;
     const exportType = defaultExport ? '{ default as ' + exportAs + ' }' : '* as ' + exportAs;
 
