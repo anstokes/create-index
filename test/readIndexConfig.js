@@ -5,7 +5,7 @@ import {
 import readIndexConfig from '../src/utilities/readIndexConfig';
 
 const fixtures = {
-  noIndex: path.resolve(__dirname, 'fixtures/read-index-config/no-index'),
+  // noIndex: path.resolve(__dirname, 'fixtures/read-index-config/no-index'),
   withConfig: path.resolve(__dirname, 'fixtures/read-index-config/with-config'),
   withInvalidConfig: path.resolve(__dirname, 'fixtures/read-index-config/with-invalid-config'),
   withoutConfig: path.resolve(__dirname, 'fixtures/read-index-config/without-config'),

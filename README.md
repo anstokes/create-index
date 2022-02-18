@@ -98,6 +98,8 @@ Options:
                            with another allowed extension.
                                                        [array] [default: ["js"]]
   --outputFile, -o         Output file            [string] [default: "index.js"]                                                      [array] [default: ["js"]]
+  --noSemicolons, --nsc    No semicolons at the end of each export line
+                                                      [boolean] [default: false]
 
 Examples:
   create-index ./src ./src/utilities      Creates or updates an existing
@@ -240,6 +242,34 @@ export {
     bar,
     foo
 };
+```
+
+## Support prefix/suffix
+
+`create-index` can automatically add a prefix and/or suffix to the export if `./index.js` contains special object with defined `prefix` or `suffix` properties in the form of `a string`, e.g.
+
+```js
+> cat index.js
+// @create-index {"prefix": "start", "suffix": "End"}
+```
+
+```js
+> tree ./
+./
+├── bar.js
+└── foo.js
+
+0 directories, 2 files
+```
+
+Given the above directory contents, after running `create-index`, `./index.js` will be:
+
+```js
+// @create-index {"prefix": "start", "suffix": "End"}
+
+export { default as startBarEnd } from './bar.js';
+export { default as startFooEnd } from './foo.js';
+
 ```
 
 ## Generate `index.tsx` for TypeScript

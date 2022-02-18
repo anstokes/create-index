@@ -63,6 +63,14 @@ const argv = yargs
       type: 'string',
     },
   })
+  .options({
+    noSemicolons: {
+      alias: 'nsc',
+      default: false,
+      description: 'No semicolons at the end of each export line',
+      type: 'boolean',
+    },
+  })
   .example(
     'create-index ./src ./src/utilities',
     'Creates or updates an existing create-index index file in the target (./src, ./src/utilities) directories.',
@@ -82,6 +90,7 @@ writeIndexCli(argv._, {
   extensions: argv.extensions,
   ignoreDirectories: argv.ignoreDirectories,
   ignoreUnsafe: argv.ignoreUnsafe,
+  noSemicolons: argv.noSemicolons,
   outputFile: argv.outputFile,
   recursive: argv.recursive,
   updateIndex: argv.update,

@@ -23,6 +23,7 @@ export default (directoryPaths, options = {}) => {
     log('Recursive:', options.recursive ? chalk.green('true') : chalk.red('false'));
     log('Ignore unsafe:', options.ignoreUnsafe ? chalk.green('true') : chalk.red('false'));
     log('Extensions:', chalk.green(options.extensions));
+    log('Semicolons:', options.noSemicolons ? chalk.red('false') : chalk.green('true'));
   }
 
   if (options.updateIndex || options.recursive) {
@@ -59,6 +60,7 @@ export default (directoryPaths, options = {}) => {
     const indexCode = createIndexCode(siblings, {
       banner: options.banner,
       config,
+      noSemicolons: options.noSemicolons,
     });
 
     const indexFilePath = path.resolve(directoryPath, options.outputFile || 'index.js');

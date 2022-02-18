@@ -1,20 +1,35 @@
 import _ from 'lodash';
+import stringHelpers from './stringHelpers';
 
 const safeVariableName = (fileName) => {
-  const indexOfDot = fileName.indexOf('.');
+  // Convert hyphenated filename to camelCase
+  const indexOfHyphen = fileName.indexOf('-');
+
+  let safeFileName = fileName;
+  if (indexOfHyphen !== -1) {
+    safeFileName = stringHelpers.hyphenToCamelCase(fileName);
+  }
+
+  // Remove file extension
+  const indexOfDot = safeFileName.indexOf('.');
 
   if (indexOfDot === -1) {
-    return fileName;
+    return safeFileName;
   } else {
-    return fileName.slice(0, indexOfDot);
+    return safeFileName.slice(0, indexOfDot);
   }
 };
 
-const buildExportBlock = (files) => {
+const buildExportBlock = (files, options) => {
   let importBlock;
+  const prefix = options.config && options.config.prefix || '';
+  const suffix = options.config && options.config.suffix || '';
+  const noSemicolons = Boolean(options.noSemicolons);
 
   importBlock = _.map(files, (fileName) => {
-    return 'export { default as ' + safeVariableName(fileName) + ' } from \'./' + fileName + '\';';
+    const importName = prefix ? stringHelpers.capitaliseFirstLetter(safeVariableName(fileName)) : safeVariableName(fileName);
+
+    return 'export { default as ' + prefix + importName + suffix + ' } from \'./' + fileName + '\'' + (noSemicolons ? '' : ';');
   });
 
   importBlock = importBlock.join('\n');
@@ -43,12 +58,12 @@ export default (filePaths, options = {}) => {
     configCode += ' ' + JSON.stringify(options.config);
   }
 
-  code += '// @create-index' + configCode + '\n\n';
+  code += '// @create-index' + configCode + '\n';
 
   if (filePaths.length) {
     const sortedFilePaths = filePaths.sort();
 
-    code += buildExportBlock(sortedFilePaths) + '\n\n';
+    code += '\n' + buildExportBlock(sortedFilePaths, options) + '\n';
   }
 
   return code;
