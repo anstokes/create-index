@@ -1,3 +1,3 @@
 // @create-index {"ignore":["/bar.js$/"]}
 
-export { default as foo } from './foo';
+export * as foo from './foo';

@@ -1,4 +1,4 @@
 // @create-index
 
-export { default as bar } from './bar';
-export { default as foo } from './foo';
+export * as bar from './bar';
+export * as foo from './foo';

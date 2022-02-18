@@ -32,22 +32,23 @@ const buildExportBlock = (directoryPath, files, options) => {
   importBlock = _.map(files, (fileName) => {
     // Default behaviour
     let importContents = 'export default';
-	
-    if (directoryPath) {
-		// Read the file
-		let importPath = path.resolve(directoryPath, fileName);
 
-		// Check if directory
-		if (fs.statSync(importPath).isDirectory()) {
-		  // Read 'index.js' from the directory
-		  importPath = path.resolve(importPath, 'index.js');
-		}
-		try {
-		  importContents = fs.readFileSync(indexPath, 'utf-8');
-		} catch (e) {
-		  // Unable to read file, revert to default behaviour
-		}
-	}
+    if (directoryPath) {
+      try {
+        let importPath = path.resolve(directoryPath, fileName);
+
+        // Check if directory
+        if (fs.statSync(importPath).isDirectory()) {
+          // Read 'index.js' from the directory
+          importPath = path.resolve(importPath, 'index.js');
+        }
+
+        // Read the file
+        importContents = fs.readFileSync(importPath, 'utf-8');
+      } catch {
+        // Unable to read file, revert to default behaviour
+      }
+    }
 
     // Check for default export
     const defaultExport = DEFAULT_EXPORT_PATTERN.test(importContents);
