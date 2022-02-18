@@ -4,13 +4,16 @@ import _ from 'lodash';
 import stringHelpers from './stringHelpers';
 import {DEFAULT_EXPORT_PATTERN} from './constants';
 
-const safeVariableName = (fileName) => {
-  // Convert hyphenated filename to camelCase
-  const indexOfHyphen = fileName.indexOf('-');
-
+const safeVariableName = (fileName, hyphenated) => {
   let safeFileName = fileName;
-  if (indexOfHyphen !== -1) {
-    safeFileName = stringHelpers.hyphenToCamelCase(fileName);
+
+  if (hyphenated) {
+    // Convert hyphenated filename to camelCase
+    const indexOfHyphen = fileName.indexOf('-');
+
+    if (indexOfHyphen !== -1) {
+      safeFileName = stringHelpers.hyphenToCamelCase(fileName);
+    }
   }
 
   // Remove file extension
@@ -54,12 +57,12 @@ const buildExportBlock = (directoryPath, files, options) => {
     const defaultExport = DEFAULT_EXPORT_PATTERN.test(importContents);
 
     // Define the export name
-    const safeName = safeVariableName(fileName);
+    const safeName = safeVariableName(fileName, true);
     const className = prefix ? stringHelpers.capitaliseFirstLetter(safeName) : safeName;
     const exportAs = prefix + className + suffix;
     const exportType = defaultExport ? '{ default as ' + exportAs + ' }' : '* as ' + exportAs;
 
-    return 'export ' + exportType + ' from \'./' + safeName + '\'' + lineEnding;
+    return 'export ' + exportType + ' from \'./' + safeVariableName(fileName) + '\'' + lineEnding;
   });
 
   importBlock = importBlock.join('\n');
