@@ -17,9 +17,11 @@ const safeVariableName = (fileName, caseConversion) => {
     break;
 
   case 'camel':
-  default:
     safeFileName = stringHelpers.hyphenToCamelCase(fileName);
     break;
+	
+  default:
+	// No conversion
   }
 
   // Remove file extension
