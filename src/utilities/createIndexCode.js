@@ -4,24 +4,22 @@ import _ from 'lodash';
 import stringHelpers from './stringHelpers';
 import {DEFAULT_EXPORT_PATTERN} from './constants';
 
-const safeVariableName = (fileName, hyphenConversion) => {
+const safeVariableName = (fileName, caseConversion) => {
   let safeFileName = fileName;
 
-  if (hyphenConversion && fileName.includes('-')) {
-    switch (hyphenConversion) {
-    case 'pascal':
-      safeFileName = stringHelpers.hyphenToPascalCase(fileName);
-      break;
+  switch (caseConversion) {
+  case 'pascal':
+    safeFileName = stringHelpers.hyphenToPascalCase(fileName);
+    break;
 
-    case 'snake':
-      safeFileName = stringHelpers.hyphenToSnakeCase(fileName);
-      break;
+  case 'snake':
+    safeFileName = stringHelpers.hyphenToSnakeCase(fileName);
+    break;
 
-    case 'camel':
-    default:
-      safeFileName = stringHelpers.hyphenToCamelCase(fileName);
-      break;
-    }
+  case 'camel':
+  default:
+    safeFileName = stringHelpers.hyphenToCamelCase(fileName);
+    break;
   }
 
   // Remove file extension

@@ -10,7 +10,7 @@ const stringHelpers = {
   hyphenToPascalCase: (hyphenated) => {
     const camelCase = stringHelpers.hyphenToCamelCase(hyphenated);
 
-    return camelCase[0].toLowerCase() + camelCase.slice(1, camelCase.length);
+    return camelCase[0].toUpperCase() + camelCase.slice(1, camelCase.length);
   },
   hyphenToSnakeCase: (hyphenated) => {
     return hyphenated.replace(/-([a-z])/g, (letter) => {
