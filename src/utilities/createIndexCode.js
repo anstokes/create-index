@@ -4,15 +4,23 @@ import _ from 'lodash';
 import stringHelpers from './stringHelpers';
 import {DEFAULT_EXPORT_PATTERN} from './constants';
 
-const safeVariableName = (fileName, hyphenated) => {
+const safeVariableName = (fileName, hyphenConversion) => {
   let safeFileName = fileName;
 
-  if (hyphenated) {
-    // Convert hyphenated filename to camelCase
-    const indexOfHyphen = fileName.indexOf('-');
+  if (hyphenConversion && fileName.includes('-')) {
+    switch (hyphenConversion) {
+    case 'pascal':
+      safeFileName = stringHelpers.hyphenToPascalCase(fileName);
+      break;
 
-    if (indexOfHyphen !== -1) {
+    case 'snake':
+      safeFileName = stringHelpers.hyphenToSnakeCase(fileName);
+      break;
+
+    case 'camel':
+    default:
       safeFileName = stringHelpers.hyphenToCamelCase(fileName);
+      break;
     }
   }
 
@@ -27,12 +35,12 @@ const safeVariableName = (fileName, hyphenated) => {
 };
 
 const buildExportBlock = (directoryPath, files, options) => {
-  let importBlock;
   const lineEnding = Boolean(options.noSemicolons) ? '' : ';';
   const classCase = (options.config && options.config.case || 'Camel').toLowerCase();
   const prefix = options.config && options.config.prefix || '';
   const suffix = options.config && options.config.suffix || '';
 
+  let importBlock;
   importBlock = _.map(files, (fileName) => {
     // Default behaviour
     let importContents = 'export default';
@@ -58,8 +66,8 @@ const buildExportBlock = (directoryPath, files, options) => {
     const defaultExport = DEFAULT_EXPORT_PATTERN.test(importContents);
 
     // Define the export name
-    const safeName = safeVariableName(fileName, true);
-    const className = prefix || classCase === 'pascal' ? stringHelpers.capitaliseFirstLetter(safeName) : safeName;
+    const safeName = safeVariableName(fileName, classCase);
+    const className = prefix ? stringHelpers.capitaliseFirstLetter(safeName) : safeName;
     const exportAs = prefix + className + suffix;
     const exportType = defaultExport ? '{ default as ' + exportAs + ' }' : '* as ' + exportAs;
 
