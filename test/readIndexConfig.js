@@ -1,7 +1,13 @@
+/**
+ * @author    Adrian Stokes <adrian@anstech.co.uk>
+ * @company   ANSTECH Limited
+ * @copyright 2023 ANSTECH Limited
+ * @license   None, all rights reserved
+ */
+
 import path from 'path';
-import {
-  expect,
-} from 'chai';
+import { expect } from 'chai';
+
 import readIndexConfig from '../src/utilities/readIndexConfig';
 
 const fixtures = {

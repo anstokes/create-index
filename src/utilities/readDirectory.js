@@ -1,6 +1,14 @@
+/**
+ * @author    Adrian Stokes <adrian@anstech.co.uk>
+ * @company   ANSTECH Limited
+ * @copyright 2023 ANSTECH Limited
+ * @license   None, all rights reserved
+ */
+
 import fs from 'fs';
 import path from 'path';
 import _ from 'lodash';
+
 import hasIndex from './hasIndex';
 import validateTargetDirectory from './validateTargetDirectory';
 
@@ -16,9 +24,7 @@ const hasMultipleExtensions = (fileName) => {
   return matches && matches.length > 1;
 };
 
-const isSafeName = (fileName) => {
-  return /^[_a-z][\w.-]*$/i.test(fileName);
-};
+const isSafeName = (fileName) => /^[_a-z][\w.-]*$/i.test(fileName);
 
 const stripExtension = (fileName) => {
   const pos = fileName.lastIndexOf('.');
@@ -30,18 +36,16 @@ const stripExtension = (fileName) => {
   return fileName.slice(0, Math.max(0, pos));
 };
 
-const removeDuplicates = (files, preferredExtension) => {
-  return _.filter(files, (fileName) => {
-    const withoutExtension = stripExtension(fileName);
-    const mainAlternative = withoutExtension + '.' + preferredExtension;
+const removeDuplicates = (files, preferredExtension) => _.filter(files, (fileName) => {
+  const withoutExtension = stripExtension(fileName);
+  const mainAlternative = `${withoutExtension}.${preferredExtension}`;
 
-    if (mainAlternative === fileName) {
-      return true;
-    }
+  if (mainAlternative === fileName) {
+    return true;
+  }
 
-    return !_.includes(files, mainAlternative);
-  });
-};
+  return !_.includes(files, mainAlternative);
+});
 
 const removeIgnoredFiles = (files, ignorePatterns = []) => {
   if (ignorePatterns.length === 0) {
@@ -59,15 +63,15 @@ const removeIgnoredFiles = (files, ignorePatterns = []) => {
   });
 
   return _.filter(files, (fileName) => {
-    let pattern;
+    let matchesPattern = true;
 
-    for (pattern of patterns) {
+    Object.values(patterns).forEach((pattern) => {
       if (fileName.match(pattern) !== null) {
-        return false;
+        matchesPattern = false;
       }
-    }
+    });
 
-    return true;
+    return matchesPattern;
   });
 };
 
@@ -106,9 +110,7 @@ export default (directoryPath, options = {}) => {
       return false;
     }
 
-    if (!isDirectory && !extensions.some((extension) => {
-      return _.endsWith(fileName, '.' + extension);
-    })) {
+    if (!isDirectory && !extensions.some((extension) => _.endsWith(fileName, `.${extension}`))) {
       return false;
     }
 

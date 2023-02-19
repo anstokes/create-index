@@ -1,3 +1,7 @@
 {
-  "extends": "canonical"
+  "env": {
+    "mocha": true
+  },
+  "extends": "airbnb-base",
+  "ignorePatterns": ["dist/**"]
 }

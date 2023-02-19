@@ -1,21 +1,23 @@
-/* eslint-disable no-restricted-syntax */
+/**
+ * @author    Adrian Stokes <adrian@anstech.co.uk>
+ * @company   ANSTECH Limited
+ * @copyright 2023 ANSTECH Limited
+ * @license   None, all rights reserved
+ */
 
 import fs from 'fs';
 import path from 'path';
-import {
-  expect,
-} from 'chai';
-import writeIndex from '../src/utilities/writeIndex';
-import codeExample from './codeExample';
+import { expect } from 'chai';
 
-const readFile = (filePath) => {
-  return fs.readFileSync(filePath, 'utf8');
-};
+import codeExample from './codeExample';
+import writeIndex from '../src/utilities/writeIndex';
+
+const readFile = (filePath) => fs.readFileSync(filePath, 'utf8');
 
 const removeFile = (filePath) => {
   try {
     fs.unlinkSync(filePath);
-  } catch {
+  } catch (err) {
     // File may not exist, from previous failed test
   }
 };
@@ -44,8 +46,7 @@ export * as foo from './foo';
 
   it('creates index with config in target directory', () => {
     const indexFilePath = path.resolve(fixturesPath, 'with-config/index.js');
-    // eslint-disable-next-line quotes
-    const ignoredExportLine = `export { default as bar } from './bar.js';`;
+    const ignoredExportLine = 'export { default as bar } from \'./bar.js\';';
 
     appendToFile(indexFilePath, ignoredExportLine);
     expect(readFile(indexFilePath).includes(ignoredExportLine)).to.equal(true);

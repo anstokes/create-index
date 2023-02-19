@@ -1,13 +1,19 @@
 #!/usr/bin/env node
 
-/* eslint-disable filenames/match-regex */
+/**
+ * @author    Adrian Stokes <adrian@anstech.co.uk>
+ * @company   ANSTECH Limited
+ * @copyright 2023 ANSTECH Limited
+ * @license   None, all rights reserved
+ */
 
 import yargs from 'yargs';
+
 import {
   writeIndexCli,
 } from '../utilities';
 
-const argv = yargs
+const { argv } = yargs
   .demand(1)
   .options({
     recursive: {
@@ -42,8 +48,8 @@ const argv = yargs
     },
   })
   .options({
-    banner: {
-      description: 'Add a custom banner at the top of the index file',
+    header: {
+      description: 'Add a custom header at the top of the index files',
       type: 'string',
     },
   })
@@ -82,12 +88,11 @@ const argv = yargs
   .example(
     'create-index ./src --extensions js jsx',
     'Creates or updates an existing create-index index file in the target (./src) directory for both .js and .jsx extensions.',
-  )
-  .argv;
+  );
 
 writeIndexCli(argv._, {
-  banner: argv.banner,
   extensions: argv.extensions,
+  header: argv.header,
   ignoreDirectories: argv.ignoreDirectories,
   ignoreUnsafe: argv.ignoreUnsafe,
   noSemicolons: argv.noSemicolons,

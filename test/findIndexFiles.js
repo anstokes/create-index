@@ -1,8 +1,14 @@
-import path from 'path';
-import {
-  expect,
-} from 'chai';
+/**
+ * @author    Adrian Stokes <adrian@anstech.co.uk>
+ * @company   ANSTECH Limited
+ * @copyright 2023 ANSTECH Limited
+ * @license   None, all rights reserved
+ */
+
 import glob from 'glob';
+import path from 'path';
+import { expect } from 'chai';
+
 import findIndexFiles from '../src/utilities/findIndexFiles';
 
 const fixturesPath = path.resolve(__dirname, '../../fixtures/find-index-files');

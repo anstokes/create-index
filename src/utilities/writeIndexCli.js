@@ -1,14 +1,22 @@
+/**
+ * @author    Adrian Stokes <adrian@anstech.co.uk>
+ * @company   ANSTECH Limited
+ * @copyright 2023 ANSTECH Limited
+ * @license   None, all rights reserved
+ */
+
 import fs from 'fs';
 import path from 'path';
 import _ from 'lodash';
 import chalk from 'chalk';
+
 import createIndexCode from './createIndexCode';
-import validateTargetDirectory from './validateTargetDirectory';
+import log from './log';
+import findIndexFiles from './findIndexFiles';
 import readDirectory from './readDirectory';
 import readIndexConfig from './readIndexConfig';
 import sortByDepth from './sortByDepth';
-import log from './log';
-import findIndexFiles from './findIndexFiles';
+import validateTargetDirectory from './validateTargetDirectory';
 
 export default (directoryPaths, options = {}) => {
   let sortedDirectoryPaths;
@@ -27,12 +35,10 @@ export default (directoryPaths, options = {}) => {
   }
 
   if (options.updateIndex || options.recursive) {
-    sortedDirectoryPaths = _.map(sortedDirectoryPaths, (directory) => {
-      return findIndexFiles(directory, {
-        fileName: options.updateIndex ? options.outputFile || 'index.js' : '*',
-        silent: options.updateIndex || options.ignoreUnsafe,
-      });
-    });
+    sortedDirectoryPaths = _.map(sortedDirectoryPaths, (directory) => findIndexFiles(directory, {
+      fileName: options.updateIndex ? options.outputFile || 'index.js' : '*',
+      silent: options.updateIndex || options.ignoreUnsafe,
+    }));
     sortedDirectoryPaths = _.flatten(sortedDirectoryPaths);
     sortedDirectoryPaths = _.uniq(sortedDirectoryPaths);
     sortedDirectoryPaths = sortByDepth(sortedDirectoryPaths);
@@ -40,10 +46,12 @@ export default (directoryPaths, options = {}) => {
     log('Updating index files in:', sortedDirectoryPaths.reverse().join(', '));
   }
 
-  sortedDirectoryPaths = sortedDirectoryPaths.filter((directoryPath) => {
-    return validateTargetDirectory(directoryPath, {outputFile: options.outputFile,
-      silent: options.ignoreUnsafe});
-  });
+  sortedDirectoryPaths = sortedDirectoryPaths.filter(
+    (directoryPath) => validateTargetDirectory(directoryPath, {
+      outputFile: options.outputFile,
+      silent: options.ignoreUnsafe,
+    }),
+  );
 
   _.forEach(sortedDirectoryPaths, (directoryPath) => {
     let existingIndexCode;
@@ -58,7 +66,7 @@ export default (directoryPaths, options = {}) => {
     });
 
     const indexCode = createIndexCode(directoryPath, siblings, {
-      banner: options.banner,
+      header: options.header,
       config,
       noSemicolons: options.noSemicolons,
     });
@@ -67,13 +75,9 @@ export default (directoryPaths, options = {}) => {
 
     try {
       existingIndexCode = fs.readFileSync(indexFilePath, 'utf8');
-
-      /* eslint-disable no-empty */
-    } catch {
-
+    } catch (err) {
+      // Unable to read file
     }
-
-    /* eslint-enable no-empty */
 
     fs.writeFileSync(indexFilePath, indexCode);
 

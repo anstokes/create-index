@@ -1,7 +1,13 @@
+/**
+ * @author    Adrian Stokes <adrian@anstech.co.uk>
+ * @company   ANSTECH Limited
+ * @copyright 2023 ANSTECH Limited
+ * @license   None, all rights reserved
+ */
+
 import path from 'path';
-import {
-  expect,
-} from 'chai';
+import { expect } from 'chai';
+
 import readDirectory from '../src/utilities/readDirectory';
 
 const fixturesPath = path.resolve(__dirname, 'fixtures/read-directory');
@@ -43,7 +49,7 @@ describe('readDirectory()', () => {
     });
 
     it('excludes directories if ignoreDirectories = true', () => {
-      const names = readDirectory(path.resolve(fixturesPath, 'children-index'), {ignoreDirectories: true});
+      const names = readDirectory(path.resolve(fixturesPath, 'children-index'), { ignoreDirectories: true });
 
       expect(names).to.deep.equal([]);
     });
@@ -71,7 +77,7 @@ describe('readDirectory()', () => {
   });
   context('target directory contains non js files, and allowing only jsx', () => {
     it('prefers file', () => {
-      const options = {extensions: ['jsx']};
+      const options = { extensions: ['jsx'] };
       const names = readDirectory(path.resolve(fixturesPath, 'children-files-alt-extension'), options);
 
       expect(names).to.deep.equal(['bar.jsx']);
@@ -79,7 +85,7 @@ describe('readDirectory()', () => {
   });
   context('target directory contains non js files, and allowing both js and jsx', () => {
     it('prefers file', () => {
-      const options = {extensions: ['js', 'jsx']};
+      const options = { extensions: ['js', 'jsx'] };
       const names = readDirectory(path.resolve(fixturesPath, 'children-files-alt-extension'), options);
 
       expect(names).to.deep.equal(['bar.jsx', 'present.js']);
@@ -87,7 +93,7 @@ describe('readDirectory()', () => {
   });
   context('target directory contains homonyms files, and allowing both js and jsx, will prefer JS as it is first extension listed', () => {
     it('prefers file', () => {
-      const options = {extensions: ['js', 'jsx']};
+      const options = { extensions: ['js', 'jsx'] };
       const names = readDirectory(path.resolve(fixturesPath, 'children-files-alt-extension-with-homonyms'), options);
 
       expect(names).to.deep.equal(['bar.js', 'present.js']);
@@ -95,7 +101,7 @@ describe('readDirectory()', () => {
   });
   context('target directory contains homonyms files, and allowing both js and jsx, will prefer JSX as it is first extension listed', () => {
     it('prefers file', () => {
-      const options = {extensions: ['jsx', 'js']};
+      const options = { extensions: ['jsx', 'js'] };
       const names = readDirectory(path.resolve(fixturesPath, 'children-files-alt-extension-with-homonyms'), options);
 
       expect(names).to.deep.equal(['bar.jsx', 'present.js']);

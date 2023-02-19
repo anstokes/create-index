@@ -1,9 +1,13 @@
-/* eslint-disable max-nested-callbacks */
+/**
+ * @author    Adrian Stokes <adrian@anstech.co.uk>
+ * @company   ANSTECH Limited
+ * @copyright 2023 ANSTECH Limited
+ * @license   None, all rights reserved
+ */
 
 import path from 'path';
-import {
-  expect,
-} from 'chai';
+import { expect } from 'chai';
+
 import validateTargetDirectory from '../src/utilities/validateTargetDirectory';
 
 const fixturesPath = path.resolve(__dirname, 'fixtures/validate-target-directory');
@@ -14,14 +18,14 @@ describe('validateTargetDirectory()', () => {
       it('throws an error', () => {
         expect(() => {
           validateTargetDirectory(path.resolve(fixturesPath, 'does-not-exist'));
-        }).to.throw(Error, 'Directory "' + path.resolve(fixturesPath, 'does-not-exist') + '" does not exist.');
+        }).to.throw(Error, `Directory "${path.resolve(fixturesPath, 'does-not-exist')}" does not exist.`);
       });
     });
     context('refers to a file', () => {
       it('throws an error', () => {
         expect(() => {
           validateTargetDirectory(path.resolve(fixturesPath, 'not-a-directory.js'));
-        }).to.throw(Error, '"' + path.resolve(fixturesPath, 'not-a-directory.js') + '" is not a directory.');
+        }).to.throw(Error, `"${path.resolve(fixturesPath, 'not-a-directory.js')}" is not a directory.`);
       });
     });
   });
@@ -36,21 +40,21 @@ describe('validateTargetDirectory()', () => {
         expect(validateTargetDirectory(path.resolve(fixturesPath, 'safe-index'))).to.equal(true);
       });
     });
-    context('safe with banner', () => {
+    context('safe with header', () => {
       it('returns true', () => {
-        expect(validateTargetDirectory(path.resolve(fixturesPath, 'safe-index-with-banner'))).to.equal(true);
+        expect(validateTargetDirectory(path.resolve(fixturesPath, 'safe-index-with-header'))).to.equal(true);
       });
     });
     context('unsafe', () => {
       it('throws an error', () => {
         expect(() => {
           validateTargetDirectory(path.resolve(fixturesPath, 'unsafe-index'));
-        }).to.throw(Error, '"' + path.resolve(fixturesPath, 'unsafe-index/index.js') + '" unsafe index.');
+        }).to.throw(Error, `"${path.resolve(fixturesPath, 'unsafe-index/index.js')}" unsafe index.`);
       });
     });
     context('unsafe ignored', () => {
       it('returns false', () => {
-        expect(validateTargetDirectory(path.resolve(fixturesPath, 'unsafe-index'), {silent: true})).to.equal(false);
+        expect(validateTargetDirectory(path.resolve(fixturesPath, 'unsafe-index'), { silent: true })).to.equal(false);
       });
     });
   });

@@ -1,3 +1,6 @@
 {
-  "extends": "canonical/mocha"
+  "env": {
+    "mocha": true
+  },
+  "extends": "airbnb-base"
 }

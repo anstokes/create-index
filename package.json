@@ -1,8 +1,8 @@
 {
   "author": {
-    "email": "gajus@gajus.com",
-    "name": "Gajus Kuizinas",
-    "url": "http://gajus.com"
+    "email": "adrian@anstech.co.uk",
+    "name": "Adrian Stokes",
+    "url": "https://adrian@anstech.co.uk"
   },
   "bin": "./dist/bin/create-index.js",
   "dependencies": {
@@ -23,10 +23,14 @@
     "@babel/plugin-transform-parameters": "^7.0.0",
     "@babel/register": "^7.0.0",
     "chai": "^4.2.0",
+    "cross-env": "^7.0.3",
     "eslint": "^7.0.0",
-    "eslint-config-canonical": "^20.0.4",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.27.5",
     "husky": "^4.2.5",
     "mocha": "^7.1.2",
+    "nyc": "^15.1.0",
+    "rimraf": "^4.1.2",
     "semantic-release": "^17.0.7"
   },
   "engines": {
@@ -42,18 +46,20 @@
   "name": "create-index",
   "repository": {
     "type": "git",
-    "url": "https://github.com/gajus/create-index"
+    "url": "https://github.com/anstokes/create-index"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run test"
+      "pre-commit": "yarn test"
     }
   },
   "scripts": {
-    "build": "rm -fr ./dist && NODE_ENV=production babel --source-maps --copy-files ./src --out-dir ./dist",
+    "clean": "rimraf ./dist",
+    "build": "yarn clean && cross-env NODE_ENV=production babel --source-maps --copy-files ./src --out-dir ./dist",
     "create-index": "node ./dist/bin/create-index ./src/utilities",
-    "lint": "NODE_ENV=development eslint ./src ./test",
-    "test": "NODE_ENV=development mocha --require @babel/register"
+    "coverage": "cross-env-shell NODE_ENV=development && ./node_modules/.bin/nyc --reporter=html --reporter=text --reporter=lcov mocha -r @babel/register",
+    "lint": "cross-env NODE_ENV=development eslint ./src ./test",
+    "test": "cross-env NODE_ENV=development mocha -r @babel/register"
   },
   "version": "0.0.0-development"
 }

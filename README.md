@@ -1,9 +1,5 @@
 # create-index
 
-[![NPM version](http://img.shields.io/npm/v/create-index.svg?style=flat-square)](https://www.npmjs.org/package/create-index)
-[![Travis build status](http://img.shields.io/travis/gajus/create-index/master.svg?style=flat-square)](https://travis-ci.org/gajus/create-index)
-[![js-canonical-style](https://img.shields.io/badge/code%20style-canonical-blue.svg?style=flat-square)](https://github.com/gajus/canonical)
-
 `create-index` program creates (and maintains) ES6 `./index.js` file in target directories that imports and exports sibling files and directories.
 
 ## Example
@@ -82,24 +78,25 @@ npm install create-index
 create-index --help
 
 Options:
-  --recursive, -r          Create/update index files recursively. Halts on any
-                           unsafe "index.js" files.   [boolean] [default: false]
+  --extensions, -x         Allows some extensions to be parsed as valid source.
+                           First extension will always be preferred to homonyms
+                           with another allowed extension.
+                                                       [array] [default: ["js"]]
+  --header                 Add a custom header at the top of the index file
+                                                                        [string]
   --ignoreUnsafe, -i       Ignores unsafe "index.js" files instead of halting.
                                                       [boolean] [default: false]
   --ignoreDirectories, -d  Ignores importing directories into the index file,
                            even if they have a safe "index.js".
                                                       [boolean] [default: false]
-  --update, -u             Updates only previously created index files
-                           (recursively).             [boolean] [default: false]
-  --banner                 Add a custom banner at the top of the index file
-                                                                        [string]
-  --extensions, -x         Allows some extensions to be parsed as valid source.
-                           First extension will always be preferred to homonyms
-                           with another allowed extension.
-                                                       [array] [default: ["js"]]
-  --outputFile, -o         Output file            [string] [default: "index.js"]                                                      [array] [default: ["js"]]
   --noSemicolons, --nsc    No semicolons at the end of each export line
                                                       [boolean] [default: false]
+  --outputFile, -o         Output file            [string] [default: "index.js"]
+                                                       [array] [default: ["js"]]
+  --recursive, -r          Create/update index files recursively. Halts on any
+                           unsafe "index.js" files.   [boolean] [default: false]
+  --update, -u             Updates only previously created index files
+                           (recursively).             [boolean] [default: false]
 
 Examples:
   create-index ./src ./src/utilities      Creates or updates an existing
@@ -174,18 +171,18 @@ If there is no `./index.js`, it will create a new file, e.g.
 // @create-index
 ```
 
-Created index file must start with `// @create-index\n\n`. This is used to make sure that `create-index` does not accidentally overwrite your local files.
+Created index file must start with `// @create-index\n\n`. This is used to make sure that `create-index` does not accidentally overwrite your own index files.
 
 If there are sibling files, index file will `import` them and `export`, e.g.
 
 ```sh
 children-directories-and-files git:(master) ✗ ls -lah
 total 0
-drwxr-xr-x   5 gajus  staff   170B  6 Jan 15:39 .
-drwxr-xr-x  10 gajus  staff   340B  6 Jan 15:53 ..
-drwxr-xr-x   2 gajus  staff    68B  6 Jan 15:29 bar
-drwxr-xr-x   2 gajus  staff    68B  6 Jan 15:29 foo
--rw-r--r--   1 gajus  staff     0B  6 Jan 15:29 foo.js
+drwxr-xr-x   5 astokes  staff   170B  6 Jan 15:39 .
+drwxr-xr-x  10 astokes  staff   340B  6 Jan 15:53 ..
+drwxr-xr-x   2 astokes  staff    68B  6 Jan 15:29 bar
+drwxr-xr-x   2 astokes  staff    68B  6 Jan 15:29 foo
+-rw-r--r--   1 astokes  staff     0B  6 Jan 15:29 foo.js
 ```
 
 Given the above directory contents, `./index.js` will be:
