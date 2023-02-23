@@ -1,6 +1,6 @@
-# create-index
+# create-index ![Coverage](./docs/coverage.svg) ![Code Style](./docs/airbnb.svg)
 
-`create-index` program creates (and maintains) ES6 `./index.js` file in target directories that imports and exports sibling files and directories.
+> `create-index` program creates (and maintains) ES6 `./index.js` file in target directories that imports and exports sibling files and directories.
 
 ## Example
 

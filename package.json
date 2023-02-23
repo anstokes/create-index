@@ -23,6 +23,7 @@
     "@babel/plugin-transform-parameters": "^7.0.0",
     "@babel/register": "^7.0.0",
     "chai": "^4.2.0",
+    "coverage-badges-cli": "^1.0.11",
     "cross-env": "^7.0.3",
     "eslint": "^7.0.0",
     "eslint-config-airbnb-base": "^15.0.0",
@@ -50,16 +51,16 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn test"
+      "pre-commit": "yarn test && yarn coverage:badge"
     }
   },
   "scripts": {
     "clean": "rimraf ./dist",
     "build": "yarn clean && cross-env NODE_ENV=production babel --source-maps --copy-files ./src --out-dir ./dist",
-    "create-index": "node ./dist/bin/create-index ./src/utilities",
-    "coverage": "cross-env-shell NODE_ENV=development && ./node_modules/.bin/nyc --reporter=html --reporter=text --reporter=lcov mocha -r @babel/register",
+    "coverage": "cross-env-shell NODE_ENV=development && ./node_modules/.bin/nyc mocha -r @babel/register && yarn coverage:badge",
+    "coverage:badge": "yarn coverage-badges -o ./docs/coverage.svg",
     "lint": "cross-env NODE_ENV=development eslint ./src ./test",
     "test": "cross-env NODE_ENV=development mocha -r @babel/register"
   },
-  "version": "0.0.0-development"
+  "version": "0.0.1"
 }
